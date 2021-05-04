@@ -296,6 +296,10 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
             applyScrollPosition(animated: true)
 
+            dataSource?.applySnapshot(snapshot, animated: animated) { [weak self] in
+                applyScrollPosition(animated: true)
+            }
+
 			shouldAnimateScrollPositionSet = animated
 
 			refreshVisibleCells(transaction: transaction, updateAll: false)
