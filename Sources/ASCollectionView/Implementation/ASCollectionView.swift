@@ -520,6 +520,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 		{
             let notch = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
             let collectionTopInset = collectionViewController?.collectionView.contentInset.top ?? 0
+            print("notch \(notch) collectionTopInset \(collectionTopInset)")
 			switch scrollPosition
 			{
 			case .top, .left:
