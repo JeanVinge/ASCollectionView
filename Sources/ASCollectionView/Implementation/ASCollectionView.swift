@@ -518,10 +518,11 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		func scrollToPosition(_ scrollPosition: ASCollectionViewScrollPosition, animated: Bool = false)
 		{
+            let notch = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
 			switch scrollPosition
 			{
 			case .top, .left:
-				collectionViewController?.collectionView.setContentOffset(.zero, animated: animated)
+                collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: notch), animated: animated)
 			case .bottom:
 				guard let maxOffset = collectionViewController?.collectionView.maxContentOffset else { return }
 				collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: maxOffset.y), animated: animated)
