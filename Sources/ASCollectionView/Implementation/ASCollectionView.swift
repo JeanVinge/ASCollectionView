@@ -293,8 +293,18 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				collectionViewController?.collectionViewLayout.invalidateLayout()
 				invalidateLayoutOnNextUpdate = false
 			}
-			dataSource?.applySnapshot(snapshot, animated: animated)
-			shouldAnimateScrollPositionSet = animated
+
+            dataSource?.applySnapshot(snapshot, animated: animated) {
+                if let scrollPositionToSet = self.parent.scrollPositionSetter?.wrappedValue
+                {
+                    self.scrollToPosition(scrollPositionToSet, animated: true)
+                    DispatchQueue.main.async {
+                        self.parent.scrollPositionSetter?.wrappedValue = nil
+                    }
+                }
+            }
+
+			shouldAnimateScrollPositionSet = true
 
 			refreshVisibleCells(transaction: transaction, updateAll: false)
 		}
