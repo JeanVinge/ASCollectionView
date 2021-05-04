@@ -54,6 +54,8 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	internal var dodgeKeyboard: Bool = true
 
+    public var extraTopInset: CGFloat = 0
+
 	// MARK: Environment variables
 
 	// SwiftUI environment
@@ -94,7 +96,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	public func makeCoordinator() -> Coordinator
 	{
-		Coordinator(self)
+        Coordinator(self, extraTopInset: extraTopInset)
 	}
 
 #if DEBUG
@@ -130,6 +132,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		let cellReuseID = UUID().uuidString
 		let supplementaryReuseID = UUID().uuidString
+        let extraTopInset: CGFloat
 
 		// MARK: Private tracking variables
 
@@ -143,9 +146,11 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		typealias Cell = ASCollectionViewCell
 
-		init(_ parent: ASCollectionView)
+        init(_ parent: ASCollectionView,
+             extraTopInset: CGFloat)
 		{
 			self.parent = parent
+            self.extraTopInset = extraTopInset
 		}
 
 		deinit
@@ -518,13 +523,10 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		func scrollToPosition(_ scrollPosition: ASCollectionViewScrollPosition, animated: Bool = false)
 		{
-            let notch = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
-            let collectionTopInset = collectionViewController?.collectionView.contentInset.top ?? 0
-            print("notch \(notch) collectionTopInset \(collectionTopInset)")
 			switch scrollPosition
 			{
 			case .top, .left:
-                collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: -(notch - collectionTopInset)), animated: animated)
+                collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: -extraTopInset), animated: animated)
 			case .bottom:
 				guard let maxOffset = collectionViewController?.collectionView.maxContentOffset else { return }
 				collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: maxOffset.y), animated: animated)
