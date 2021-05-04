@@ -19,6 +19,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	public var layout: Layout = .default
 	public var sections: [Section]
 	public var editMode: Bool = false
+    public var extraTopInset: CGFloat = 0
 
 	// MARK: Internal variables modified by modifier functions
 
@@ -53,8 +54,6 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	internal var shouldAnimateRecreatedLayoutOnStateChange: Bool = false
 
 	internal var dodgeKeyboard: Bool = true
-
-    public var extraTopInset: CGFloat = 0
 
 	// MARK: Environment variables
 
