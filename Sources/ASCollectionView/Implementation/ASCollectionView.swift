@@ -518,7 +518,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		func scrollToPosition(_ scrollPosition: ASCollectionViewScrollPosition, animated: Bool = false)
 		{
-            let notch = UIApplication.shared.delegate?.window??.safeAreaInsets.top ?? 0
+            let notch = UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0
             print("notch \(notch)")
 			switch scrollPosition
 			{
