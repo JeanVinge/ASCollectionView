@@ -294,8 +294,6 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				invalidateLayoutOnNextUpdate = false
 			}
 
-            applyScrollPosition(animated: true)
-
             dataSource?.applySnapshot(snapshot, animated: animated) { [weak self] in
                 guard let self = self else { return }
                 self.applyScrollPosition(animated: true)
