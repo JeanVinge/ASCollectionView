@@ -294,16 +294,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				invalidateLayoutOnNextUpdate = false
 			}
 
-            dataSource?.applySnapshot(snapshot, animated: animated) { [weak self] in
-                guard let self = self else { return }
-                if let scrollPositionToSet = self.parent.scrollPositionSetter?.wrappedValue
-                {
-                    DispatchQueue.main.async {
-                        self.scrollToPosition(scrollPositionToSet, animated: true)
-                        self.parent.scrollPositionSetter?.wrappedValue = nil
-                    }
-                }
-            }
+            applyScrollPosition(animated: true)
 
 			shouldAnimateScrollPositionSet = animated
 
