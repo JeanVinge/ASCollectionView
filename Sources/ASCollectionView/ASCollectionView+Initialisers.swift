@@ -14,10 +14,13 @@ public extension ASCollectionView
 	 - Parameters:
 	 - sections: An array of sections (ASCollectionViewSection)
 	 */
-	init(editMode: Bool = false, sections: [Section])
+	init(editMode: Bool = false,
+         extraTopInset: CGFloat = 0,
+         sections: [Section])
 	{
 		self.editMode = editMode
 		self.sections = sections
+        self.extraTopInset = extraTopInset
 	}
 
 	/**
@@ -26,9 +29,12 @@ public extension ASCollectionView
 	 - Parameters:
 	 - sectionBuilder: A closure containing multiple sections (ASCollectionViewSection)
 	 */
-	init(editMode: Bool = false, @SectionArrayBuilder <SectionID> sectionBuilder: () -> [Section])
+	init(editMode: Bool = false,
+         extraTopInset: CGFloat = 0,
+         @SectionArrayBuilder <SectionID> sectionBuilder: () -> [Section])
 	{
 		sections = sectionBuilder()
+        self.extraTopInset = extraTopInset
 	}
 }
 
@@ -43,18 +49,25 @@ public extension ASCollectionView where SectionID == Int
 	 - Parameters:
 	 - section: A single section (ASCollectionViewSection)
 	 */
-	init(editMode: Bool = false, section: Section)
+	init(editMode: Bool = false,
+         extraTopInset: CGFloat = 0,
+         section: Section)
 	{
 		self.editMode = editMode
 		sections = [section]
+        self.extraTopInset = extraTopInset
 	}
 
 	/**
 	 Initializes a  collection view with a single section of static content
 	 */
-	init(editMode: Bool = false, @ViewArrayBuilder staticContent: () -> ViewArrayBuilder.Wrapper)
+	init(editMode: Bool = false,
+         extraTopInset: CGFloat = 0,
+         @ViewArrayBuilder staticContent: () -> ViewArrayBuilder.Wrapper)
 	{
-		self.init(editMode: editMode, sections: [ASCollectionViewSection(id: 0, content: staticContent)])
+        self.init(editMode: editMode,
+                  extraTopInset: extraTopInset,
+                  sections: [ASCollectionViewSection(id: 0, content: staticContent)])
 	}
 
 	/**
@@ -62,6 +75,7 @@ public extension ASCollectionView where SectionID == Int
 	 */
 	init<DataCollection: RandomAccessCollection, DataID: Hashable, Content: View>(
 		editMode: Bool = false,
+        extraTopInset: CGFloat = 0,
 		data: DataCollection,
 		dataID dataIDKeyPath: KeyPath<DataCollection.Element, DataID>,
 		@ViewBuilder contentBuilder: @escaping ((DataCollection.Element, ASCellContext) -> Content))
@@ -74,6 +88,7 @@ public extension ASCollectionView where SectionID == Int
 			dataID: dataIDKeyPath,
 			contentBuilder: contentBuilder)
 		sections = [section]
+        self.extraTopInset = extraTopInset
 	}
 
 	/**
