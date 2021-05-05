@@ -19,6 +19,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 	public var layout: Layout = .default
 	public var sections: [Section]
 	public var editMode: Bool = false
+    public var extraTopInset: CGFloat
 
 	// MARK: Internal variables modified by modifier functions
 
@@ -94,7 +95,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 	public func makeCoordinator() -> Coordinator
 	{
-		Coordinator(self)
+        Coordinator(self, extraTopInset: extraTopInset)
 	}
 
 #if DEBUG
@@ -130,6 +131,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		let cellReuseID = UUID().uuidString
 		let supplementaryReuseID = UUID().uuidString
+        let extraTopInset: CGFloat
 
 		// MARK: Private tracking variables
 
@@ -143,9 +145,11 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 
 		typealias Cell = ASCollectionViewCell
 
-		init(_ parent: ASCollectionView)
+        init(_ parent: ASCollectionView,
+             extraTopInset: CGFloat)
 		{
 			self.parent = parent
+            self.extraTopInset = extraTopInset
 		}
 
 		deinit
@@ -293,7 +297,12 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 				collectionViewController?.collectionViewLayout.invalidateLayout()
 				invalidateLayoutOnNextUpdate = false
 			}
-			dataSource?.applySnapshot(snapshot, animated: animated)
+
+            dataSource?.applySnapshot(snapshot, animated: animated) { [weak self] in
+                guard let self = self else { return }
+                self.applyScrollPosition(animated: true)
+            }
+
 			shouldAnimateScrollPositionSet = animated
 
 			refreshVisibleCells(transaction: transaction, updateAll: false)
@@ -516,7 +525,7 @@ public struct ASCollectionView<SectionID: Hashable>: UIViewControllerRepresentab
 			switch scrollPosition
 			{
 			case .top, .left:
-				collectionViewController?.collectionView.setContentOffset(.zero, animated: animated)
+                collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: -extraTopInset), animated: animated)
 			case .bottom:
 				guard let maxOffset = collectionViewController?.collectionView.maxContentOffset else { return }
 				collectionViewController?.collectionView.setContentOffset(.init(x: 0, y: maxOffset.y), animated: animated)
